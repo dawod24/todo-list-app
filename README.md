@@ -27,7 +27,6 @@ A full-featured todo list application built with vanilla JavaScript.
 
 Dawod
 - GitHub: [@dawod24](https://github.com/dawod24)
-- Portfolio: [Your portfolio URL]
 
 ## 📝 License
 
