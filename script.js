@@ -104,6 +104,26 @@ function deleteTodo(id) {
     updateCounts();
 }
 
+// Edit todo text
+function editTodo(id) {
+    const todo = todos.find(t => t.id === id);
+    if (!todo) return;
+    
+    const newText = prompt('Edit your todo:', todo.text);
+    
+    if (newText !== null && newText.trim() !== '') {
+        todos = todos.map(t => {
+            if (t.id === id) {
+                return { ...t, text: newText.trim() };
+            }
+            return t;
+        });
+        
+        saveTodosToStorage();
+        renderTodos();
+    }
+}
+
 // Render todos based on current filter
 function renderTodos() {
     // Filter todos based on current filter
@@ -134,10 +154,18 @@ function renderTodos() {
             <div class="todo-checkbox" onclick="toggleTodo(${todo.id})">
                 <i class="fas fa-check"></i>
             </div>
-            <span class="todo-text">${escapeHtml(todo.text)}</span>
-            <button class="delete-btn" onclick="deleteTodo(${todo.id})">
-                <i class="fas fa-trash"></i>
-            </button>
+            <div class="todo-content">
+                <span class="todo-text">${escapeHtml(todo.text)}</span>
+                <span class="todo-timestamp">${formatDate(todo.createdAt)}</span>
+            </div>
+            <div class="todo-actions">
+                <button class="edit-btn" onclick="editTodo(${todo.id})" title="Edit todo">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="delete-btn" onclick="deleteTodo(${todo.id})" title="Delete todo">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
         `;
         todoList.appendChild(li);
     });
@@ -175,6 +203,27 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// Format date for display
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} min ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    
+    return date.toLocaleDateString('en-GB', { 
+        day: 'numeric', 
+        month: 'short',
+        year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+    });
 }
 
 // Initial render
