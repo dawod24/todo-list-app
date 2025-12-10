@@ -11,6 +11,31 @@ const allCount = document.getElementById('allCount');
 const activeCount = document.getElementById('activeCount');
 const completedCount = document.getElementById('completedCount');
 
+// Theme toggle
+const themeToggle = document.getElementById('themeToggle');
+let currentTheme = localStorage.getItem('theme') || 'light';
+
+// Apply saved theme on load
+if (currentTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+}
+
+// Toggle theme
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    
+    if (document.body.classList.contains('dark-mode')) {
+        currentTheme = 'dark';
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        localStorage.setItem('theme', 'dark');
+    } else {
+        currentTheme = 'light';
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        localStorage.setItem('theme', 'light');
+    }
+});
+
 // State
 let todos = [];
 let currentFilter = 'all';
